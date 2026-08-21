@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Our Monthiversary 💕</title>
+
+  <!--
+    Future idea box (not built yet — ask if you want any of these added):
+    - Growing monthly photo gallery (a new photo/memory each month)
+    - Editable "love note of the month" text block
+    - A small "memories so far" strip linking back to index.html's proposal moment
+    - Rotating list of short phrases so each month's page feels a little different
+  -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* RESET & BASE */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Georgia, serif;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+      background-color: #fce4ec;
+    }
+
+    .hidden { display: none !important; }
+
+    /* PAGE LAYOUT (celebration page) */
+    .page {
+      min-height: 100vh;
+      min-height: 100dvh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 25%, #e91e63 50%, #c2185b 75%, #880e4f 100%);
+      overflow-y: auto;
+    }
+
+    /* CARD */
+    .card {
+      background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(252,228,236,0.95));
+      border: 3px solid #c2185b;
+      border-radius: 24px;
+      padding: 30px 20px;
+      max-width: 560px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      margin: auto 0;
+      animation: fadeIn 1s ease-out;
+    }
+
+    h1 { font-size: 1.8rem; color: #880e4f; margin-bottom: 12px; line-height: 1.2; }
+
+    .divider { width: 100px; height: 4px; background: linear-gradient(90deg, #f48fb1, #c2185b, #f48fb1); margin: 12px auto; border-radius: 4px; }
+    .subtitle { font-size: 1.1rem; color: #ad1457; margin-bottom: 16px; font-style: italic; }
+
+    .heart-icon { font-size: 2.5rem; display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 15px; }
+    .heart-icon svg { width: 45px; height: 45px; }
+    .pulse { animation: pulse 1.4s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+    /* MONTHS-TOGETHER COUNTER */
+    .countdown-section {
+      background: linear-gradient(135deg, rgba(136,14,79,0.08), rgba(194,24,91,0.08));
+      border: 2px solid #f48fb1; border-radius: 16px;
+      padding: 16px; margin-bottom: 20px;
+    }
+    .countdown-label {
+      font-family: 'Aref Ruqaa', Georgia, serif;
+      font-size: 1rem; color: #ad1457; margin-bottom: 10px;
+    }
+    .countdown-digits {
+      display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;
+    }
+    .countdown-unit {
+      background: linear-gradient(135deg, #e91e63, #c2185b);
+      color: white; border-radius: 12px; padding: 8px 10px; min-width: 60px;
+      box-shadow: 0 4px 12px rgba(194,24,91,0.3);
+    }
+    .countdown-unit .num { font-size: 1.5rem; font-weight: bold; display: block; }
+    .countdown-unit .lbl { font-size: 0.65rem; text-transform: uppercase; opacity: 0.9; display: block; }
+
+    /* VIDEO BOX */
+    .video-box {
+      border: 3px solid #c2185b;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      background-color: #f8bbd9;
+      margin-bottom: 20px;
+      line-height: 0;
+    }
+    .anniversary-video {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      max-height: 70vh;
+      background: #000;
+    }
+
+    .footer { color: #880e4f; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; }
+
+    /* MUTE BUTTON */
+    .mute-btn {
+      position: fixed; top: 16px; right: 16px; z-index: 20;
+      width: 44px; height: 44px; border-radius: 50%;
+      border: 2px solid #c2185b;
+      background: rgba(255,255,255,0.85);
+      font-size: 1.2rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    @keyframes fadeIn { 0% { opacity: 0; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
+
+    /* LOCK SCREEN (reuses index.html's suspense-page look) */
+    .page0 {
+      min-height: 100vh; min-height: 100dvh; width: 100%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      position: relative; overflow: hidden;
+    }
+    .page0::before {
+      content: '';
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(0,0,0,0.4) 100%);
+      pointer-events: none;
+    }
+    .suspense-card {
+      background: rgba(255,255,255,0.05);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 24px; padding: 40px 30px;
+      max-width: 450px; width: 90%; text-align: center;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      position: relative; z-index: 1;
+    }
+    .suspense-hint {
+      font-family: Georgia, serif; font-size: 1.1rem;
+      color: rgba(255,255,255,0.6); margin-bottom: 30px;
+      font-style: italic;
+    }
+    .suspense-countdown {
+      display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;
+    }
+    .suspense-unit {
+      background: linear-gradient(135deg, rgba(233,30,99,0.3), rgba(194,24,91,0.3));
+      border: 1px solid rgba(233,30,99,0.4);
+      color: white; border-radius: 16px; padding: 15px 12px; min-width: 70px;
+      box-shadow: 0 4px 20px rgba(233,30,99,0.2);
+    }
+    .suspense-unit .num {
+      font-size: 2.2rem; font-weight: bold; display: block;
+      text-shadow: 0 0 20px rgba(233,30,99,0.5);
+    }
+    .suspense-unit .lbl {
+      font-size: 0.7rem; text-transform: uppercase;
+      opacity: 0.7; display: block; margin-top: 4px;
+    }
+    .suspense-dots {
+      margin-top: 40px; display: flex; justify-content: center; gap: 8px;
+    }
+    .suspense-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(233,30,99,0.5);
+      animation: suspensePulse 1.5s ease-in-out infinite;
+    }
+    .suspense-dot:nth-child(2) { animation-delay: 0.3s; }
+    .suspense-dot:nth-child(3) { animation-delay: 0.6s; }
+    @keyframes suspensePulse {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+    .page0-transition { animation: page0FadeOut 1s ease forwards; }
+    @keyframes page0FadeOut { to { opacity: 0; transform: scale(1.1); } }
+
+    @media (min-width: 500px) {
+      .card { padding: 40px; }
+      h1 { font-size: 2.5rem; }
+      .countdown-unit { min-width: 70px; padding: 10px 14px; }
+      .countdown-unit .num { font-size: 1.8rem; }
+      .countdown-unit .lbl { font-size: 0.7rem; }
+      .suspense-unit .num { font-size: 2.8rem; }
+      .suspense-unit { min-width: 85px; padding: 18px 15px; }
+    }
+    @media (max-width: 360px) {
+      h1 { font-size: 1.5rem; }
+      .countdown-unit { min-width: 50px; padding: 6px 8px; }
+      .countdown-unit .num { font-size: 1.2rem; }
+      .suspense-unit .num { font-size: 1.6rem; }
+      .suspense-unit { min-width: 55px; padding: 10px 8px; }
+      .suspense-hint { font-size: 0.95rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOCK SCREEN -->
+  <div id="page0" class="page0 hidden">
+    <div class="suspense-card">
+      <div class="suspense-hint" id="suspenseHint">Something sweet is coming on the 23rd…</div>
+      <div class="suspense-countdown" id="suspenseCountdown">
+        <div class="suspense-unit"><span class="num" id="s-days">0</span><span class="lbl">Days</span></div>
+        <div class="suspense-unit"><span class="num" id="s-hours">00</span><span class="lbl">Hours</span></div>
+        <div class="suspense-unit"><span class="num" id="s-mins">00</span><span class="lbl">Minutes</span></div>
+        <div class="suspense-unit"><span class="num" id="s-secs">00</span><span class="lbl">Seconds</span></div>
+      </div>
+      <div class="suspense-dots">
+        <div class="suspense-dot"></div>
+        <div class="suspense-dot"></div>
+        <div class="suspense-dot"></div>
+      </div>
+    </div>
+    <!-- Lock-screen music (reused from the proposal page) -->
+    <audio id="lockAudio" loop preload="auto">
+      <source src="suspense.mp3" type="audio/mpeg">
+    </audio>
+  </div>
+
+  <!-- CELEBRATION PAGE -->
+  <div id="page1" class="page hidden">
+    <button class="mute-btn" id="muteBtn" title="Mute/unmute music">🔊</button>
+
+    <div class="card">
+      <div class="heart-icon pulse">
+        <svg viewBox="0 0 100 100"><ellipse cx="50" cy="45" rx="20" ry="18" fill="#8B0000"/><ellipse cx="42" cy="42" rx="15" ry="14" fill="#B22222"/><ellipse cx="58" cy="42" rx="15" ry="14" fill="#B22222"/><ellipse cx="50" cy="35" rx="12" ry="12" fill="#DC143C"/><ellipse cx="45" cy="50" rx="14" ry="12" fill="#8B0000"/><ellipse cx="55" cy="50" rx="14" ry="12" fill="#8B0000"/><ellipse cx="50" cy="40" rx="8" ry="10" fill="#FF6B6B"/></svg>
+        <span>💕</span>
+        <svg viewBox="0 0 100 100"><ellipse cx="50" cy="45" rx="20" ry="18" fill="#DB7093"/><ellipse cx="42" cy="42" rx="15" ry="14" fill="#FF69B4"/><ellipse cx="58" cy="42" rx="15" ry="14" fill="#FF69B4"/><ellipse cx="50" cy="35" rx="12" ry="12" fill="#FFB6C1"/><ellipse cx="45" cy="50" rx="14" ry="12" fill="#DB7093"/><ellipse cx="55" cy="50" rx="14" ry="12" fill="#DB7093"/><ellipse cx="50" cy="40" rx="8" ry="10" fill="#FFC0CB"/></svg>
+      </div>
+
+      <h1 id="monthTitle">💕 Months Together 💕</h1>
+      <div class="divider"></div>
+      <p class="subtitle">Happy monthiversary, Anan 🌹</p>
+
+      <!-- VIDEO -->
+      <div class="video-box">
+        <!--
+          Drop the prepared video file at the repo root as "anniversary-video.mp4"
+          (same folder as this file). Until it's added, the player below will
+          just show as empty/unplayable — that's expected.
+        -->
+        <video class="anniversary-video" id="annVideo" controls playsinline preload="metadata">
+          <source src="anniversary-video.mp4" type="video/mp4">
+          Your browser doesn't support embedded video.
+        </video>
+      </div>
+
+      <!-- MONTHS-TOGETHER COUNTER -->
+      <div class="countdown-section">
+        <div class="countdown-label">💕 Engaged since 23.01.2026 💕</div>
+        <div class="countdown-digits" id="countdown">
+          <div class="countdown-unit"><span class="num" id="cd-months">0</span><span class="lbl">Months</span></div>
+          <div class="countdown-unit"><span class="num" id="cd-days">0</span><span class="lbl">Days</span></div>
+          <div class="countdown-unit"><span class="num" id="cd-hours">0</span><span class="lbl">Hours</span></div>
+          <div class="countdown-unit"><span class="num" id="cd-mins">0</span><span class="lbl">Minutes</span></div>
+          <div class="countdown-unit"><span class="num" id="cd-secs">0</span><span class="lbl">Seconds</span></div>
+        </div>
+      </div>
+
+      <div class="footer"><span>💕</span><span>23rd of every month</span><span>💕</span></div>
+    </div>
+
+    <!-- Celebration-page ambiance (reused from the proposal page) -->
+    <audio id="bgAudio" loop preload="auto">
+      <source src="fayruz.mp3" type="audio/mpeg">
+    </audio>
+  </div>
+
+  <script>
+    /* ----- ENGAGEMENT DATE ----- */
+    // 23.01.2026, matches index.html's START_DATE (Egypt time)
+    var ENGAGEMENT_DATE = new Date(Date.UTC(2026, 0, 23, 16, 15, 0));
+
+    /* ----- MONTHLY 23RD UNLOCK WINDOW (Egypt time, UTC+2) ----- */
+    // The 23rd 00:00 Egypt time == the 22nd 22:00 UTC (same offset trick as index.html's TARGET_DATE)
+    function get23rdUTC(year, month) {
+      return new Date(Date.UTC(year, month, 22, 22, 0, 0));
+    }
+
+    function getUnlockWindow(now) {
+      var y = now.getUTCFullYear(), m = now.getUTCMonth();
+      var start = get23rdUTC(y, m);
+      if (now < start) {
+        var prevStart = get23rdUTC(y, m - 1);
+        var prevEnd = new Date(+prevStart + 86400000);
+        return { start: prevStart, end: prevEnd, upcoming: start };
+      }
+      var end = new Date(+start + 86400000);
+      var nextStart = get23rdUTC(y, m + 1);
+      return { start: start, end: end, upcoming: (now < end) ? null : nextStart };
+    }
+
+    var lockInterval = null;
+    var lockAudio = document.getElementById('lockAudio');
+    var lockPlaying = false;
+
+    function playLockOnce() {
+      if (lockAudio && !lockPlaying) {
+        lockAudio.play().then(function () { lockPlaying = true; }).catch(function () {});
+      }
+    }
+
+    function init() {
+      var urlParams = new URLSearchParams(window.location.search);
+      var testMode = urlParams.has('test') || urlParams.has('skip');
+      var now = new Date();
+      var win = getUnlockWindow(now);
+      var unlocked = testMode || !win.upcoming;
+
+      if (unlocked) {
+        document.getElementById('page0').classList.add('hidden');
+        showCelebration();
+      } else {
+        document.getElementById('page0').classList.remove('hidden');
+        document.getElementById('page1').classList.add('hidden');
+        playLockOnce();
+        document.body.addEventListener('click', playLockOnce, { once: true });
+        document.body.addEventListener('touchstart', playLockOnce, { once: true });
+        startLockCountdown(win.upcoming);
+      }
+    }
+
+    function startLockCountdown(target) {
+      updateLockCountdown(target);
+      lockInterval = setInterval(function () { updateLockCountdown(target); }, 1000);
+    }
+
+    function updateLockCountdown(target) {
+      var now = new Date();
+      var diff = Math.floor((target - now) / 1000);
+
+      if (diff <= 0) {
+        clearInterval(lockInterval);
+        transitionToCelebration();
+        return;
+      }
+
+      var days = Math.floor(diff / 86400);
+      var hours = Math.floor((diff % 86400) / 3600);
+      var mins = Math.floor((diff % 3600) / 60);
+      var secs = diff % 60;
+
+      document.getElementById('s-days').textContent = days;
+      document.getElementById('s-hours').textContent = String(hours).padStart(2, '0');
+      document.getElementById('s-mins').textContent = String(mins).padStart(2, '0');
+      document.getElementById('s-secs').textContent = String(secs).padStart(2, '0');
+    }
+
+    function transitionToCelebration() {
+      var page0 = document.getElementById('page0');
+      if (lockAudio) { lockAudio.pause(); lockAudio.currentTime = 0; }
+      page0.classList.add('page0-transition');
+      setTimeout(function () {
+        page0.classList.add('hidden');
+        showCelebration();
+      }, 1000);
+    }
+
+    /* ----- CELEBRATION PAGE ----- */
+    var cdInterval = null;
+    var bgAudio = document.getElementById('bgAudio');
+    var bgPlaying = false;
+    var muteBtn = document.getElementById('muteBtn');
+    var muted = false;
+
+    function showCelebration() {
+      document.getElementById('page1').classList.remove('hidden');
+      startMonthsCounter();
+      playBgOnce();
+      document.body.addEventListener('click', playBgOnce, { once: true });
+      document.body.addEventListener('touchstart', playBgOnce, { once: true });
+    }
+
+    function playBgOnce() {
+      if (bgAudio && !bgPlaying && !muted) {
+        bgAudio.volume = 0.35;
+        bgAudio.play().then(function () { bgPlaying = true; }).catch(function () {});
+      }
+    }
+
+    muteBtn.addEventListener('click', function () {
+      muted = !muted;
+      muteBtn.textContent = muted ? '🔇' : '🔊';
+      if (muted) {
+        bgAudio.pause();
+      } else {
+        playBgOnce();
+      }
+    });
+
+    // Duck the background music whenever the video is actually playing
+    var annVideo = document.getElementById('annVideo');
+    annVideo.addEventListener('play', function () {
+      if (bgAudio) bgAudio.pause();
+    });
+    annVideo.addEventListener('pause', function () {
+      if (!muted) playBgOnce();
+    });
+    annVideo.addEventListener('ended', function () {
+      if (!muted) playBgOnce();
+    });
+
+    function monthsBetween(from, to) {
+      var months = (to.getUTCFullYear() - from.getUTCFullYear()) * 12 + (to.getUTCMonth() - from.getUTCMonth());
+      // If we haven't reached "from"'s day-of-month yet this month, we haven't completed this month
+      var fromAnchor = new Date(Date.UTC(to.getUTCFullYear(), to.getUTCMonth(), from.getUTCDate(), from.getUTCHours(), from.getUTCMinutes(), from.getUTCSeconds()));
+      if (to < fromAnchor) months -= 1;
+      return Math.max(0, months);
+    }
+
+    function startMonthsCounter() {
+      updateMonthsCounter();
+      cdInterval = setInterval(updateMonthsCounter, 1000);
+    }
+
+    function updateMonthsCounter() {
+      var now = new Date();
+      var months = monthsBetween(ENGAGEMENT_DATE, now);
+
+      // Anchor = ENGAGEMENT_DATE + `months` whole months, so the remainder is pure days/h/m/s
+      var anchor = new Date(Date.UTC(
+        ENGAGEMENT_DATE.getUTCFullYear(),
+        ENGAGEMENT_DATE.getUTCMonth() + months,
+        ENGAGEMENT_DATE.getUTCDate(),
+        ENGAGEMENT_DATE.getUTCHours(),
+        ENGAGEMENT_DATE.getUTCMinutes(),
+        ENGAGEMENT_DATE.getUTCSeconds()
+      ));
+
+      var diff = Math.max(0, Math.floor((now - anchor) / 1000));
+      var days = Math.floor(diff / 86400);
+      var hours = Math.floor((diff % 86400) / 3600);
+      var mins = Math.floor((diff % 3600) / 60);
+      var secs = diff % 60;
+
+      document.getElementById('cd-months').textContent = months;
+      document.getElementById('cd-days').textContent = days;
+      document.getElementById('cd-hours').textContent = hours;
+      document.getElementById('cd-mins').textContent = mins;
+      document.getElementById('cd-secs').textContent = secs;
+
+      document.getElementById('monthTitle').textContent = '💕 ' + months + ' Month' + (months === 1 ? '' : 's') + ' Together 💕';
+    }
+
+    init();
+  </script>
+</body>
+</html>
