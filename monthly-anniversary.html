@@ -6,6 +6,12 @@
   <title>Our Monthiversary 💕</title>
 
   <!--
+    Video: embedded from Google Drive (the prepared file is 355MB in an iOS format,
+    too large for a normal GitHub push and not reliably playable as a local file).
+    See VIDEO_DRIVE_FILE_ID near the top of the <script> below — paste in the
+    Google Drive file ID once the video is uploaded there with "Anyone with the
+    link" sharing turned on.
+
     Future idea box (not built yet — ask if you want any of these added):
     - Growing monthly photo gallery (a new photo/memory each month)
     - Editable "love note of the month" text block
@@ -104,9 +110,14 @@
     .anniversary-video {
       display: block;
       width: 100%;
-      max-width: 100%;
-      max-height: 70vh;
+      aspect-ratio: 16 / 9;
+      border: 0;
       background: #000;
+    }
+
+    .video-hint {
+      font-size: 0.8rem; color: #ad1457; opacity: 0.75;
+      font-style: italic; margin-bottom: 16px;
     }
 
     .footer { color: #880e4f; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; }
@@ -243,18 +254,11 @@
       <div class="divider"></div>
       <p class="subtitle">Happy monthiversary, Anan 🌹</p>
 
-      <!-- VIDEO -->
+      <!-- VIDEO (embedded from Google Drive — see VIDEO_DRIVE_FILE_ID in the script) -->
       <div class="video-box">
-        <!--
-          Drop the prepared video file at the repo root as "anniversary-video.mp4"
-          (same folder as this file). Until it's added, the player below will
-          just show as empty/unplayable — that's expected.
-        -->
-        <video class="anniversary-video" id="annVideo" controls playsinline preload="metadata">
-          <source src="anniversary-video.mp4" type="video/mp4">
-          Your browser doesn't support embedded video.
-        </video>
+        <iframe class="anniversary-video" id="annVideo" allow="autoplay" allowfullscreen title="Our anniversary video"></iframe>
       </div>
+      <p class="video-hint">🔇 tip: mute the music above before playing the video</p>
 
       <!-- MONTHS-TOGETHER COUNTER -->
       <div class="countdown-section">
@@ -278,6 +282,11 @@
   </div>
 
   <script>
+    /* ----- VIDEO (Google Drive embed) ----- */
+    // Paste the Google Drive FILE ID here once the video is uploaded and shared as
+    // "Anyone with the link". Get it from the share link: drive.google.com/file/d/<FILE_ID>/view
+    var VIDEO_DRIVE_FILE_ID = "PASTE_GOOGLE_DRIVE_FILE_ID_HERE";
+
     /* ----- ENGAGEMENT DATE ----- */
     // 23.01.2026, matches index.html's START_DATE (Egypt time)
     var ENGAGEMENT_DATE = new Date(Date.UTC(2026, 0, 23, 16, 15, 0));
@@ -399,17 +408,10 @@
       }
     });
 
-    // Duck the background music whenever the video is actually playing
-    var annVideo = document.getElementById('annVideo');
-    annVideo.addEventListener('play', function () {
-      if (bgAudio) bgAudio.pause();
-    });
-    annVideo.addEventListener('pause', function () {
-      if (!muted) playBgOnce();
-    });
-    annVideo.addEventListener('ended', function () {
-      if (!muted) playBgOnce();
-    });
+    // Wire up the Google Drive video embed
+    // (a cross-origin Drive preview iframe can't report play/pause state back to
+    // this page, so background music isn't auto-ducked — see the on-page hint instead)
+    document.getElementById('annVideo').src = 'https://drive.google.com/file/d/' + VIDEO_DRIVE_FILE_ID + '/preview';
 
     function monthsBetween(from, to) {
       var months = (to.getUTCFullYear() - from.getUTCFullYear()) * 12 + (to.getUTCMonth() - from.getUTCMonth());
